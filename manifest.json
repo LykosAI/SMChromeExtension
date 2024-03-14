@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Stability Matrix CivitAI Integration",
+  "description": "Adds a download button to civitai.com to download models directly into Stability Matrix.",
+  "version": "1.0",
+  "action": {
+    "default_icon": "icon.png"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://civitai.com/*"],
+      "js": ["script.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
