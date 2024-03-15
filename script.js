@@ -63,8 +63,4 @@ function addButton() {
   });
 }
 addButton();
-// Inject the content script into the page
-const buttons = document.querySelectorAll('div[data-radix-scroll-area-viewport] .mantine-UnstyledButton-root[data-button="true"]');
-buttons.forEach((button) => {
-    button.addEventListener('click', () => setTimeout(addButton, 500));
-});
+navigation.addEventListener('navigate', () => setTimeout(addButton, 500));
