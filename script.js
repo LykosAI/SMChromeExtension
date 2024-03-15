@@ -14,6 +14,16 @@ function addButton() {
     const buttonContainer = downloadButton.parentNode;
     const downloadParams = downloadButton.href.split('?')[1];
 
+    // Check if the "Download with Stability Matrix" button already exists
+    const existingButton = buttonContainer.parentNode.querySelector(
+      'a[href^="stabilitymatrix://downloadCivitModel"]'
+    );
+
+    // If the button already exists, skip creating a new one
+    if (existingButton) {
+      return;
+    }
+
     // Check if the create button exists
     if (downloadParams) {
       // Create a new button element
@@ -63,4 +73,17 @@ function addButton() {
   });
 }
 addButton();
-navigation.addEventListener('navigate', () => setTimeout(addButton, 500));
+navigation.addEventListener('navigate', (event) => {
+  if (!event.canIntercept) {
+    return;
+  }
+  
+  const url = new URL(event.destination.url);
+  if (event.downloadRequest !== null) {
+    return;
+  }
+
+  if (!url.href.includes("stabilitymatrix://") && !url.href.includes("/images/")) {
+    setTimeout(addButton, 500);
+  }
+});
