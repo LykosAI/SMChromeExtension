@@ -72,18 +72,20 @@ function addButton() {
     }
   });
 }
-addButton();
-navigation.addEventListener('navigate', (event) => {
-  if (!event.canIntercept) {
-    return;
-  }
-  
-  const url = new URL(event.destination.url);
-  if (event.downloadRequest !== null) {
-    return;
-  }
 
-  if (!url.href.includes("stabilitymatrix://") && !url.href.includes("/images/")) {
-    setTimeout(addButton, 500);
+addButton();
+
+let previousUrl = '';
+const observer = new MutationObserver(mutations => {
+  if (location.href !== previousUrl) {
+    previousUrl = location.href;
+    const url = new URL(location.href);
+
+    if (!url.href.includes("stabilitymatrix://") && !url.href.includes("/images/")) {
+      setTimeout(addButton, 500);
+    }
   }
 });
+
+const config = {attributes: true, childList: true, subtree: true};
+observer.observe(document, config);
