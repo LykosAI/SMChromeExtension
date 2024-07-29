@@ -2,17 +2,14 @@
 function addButton() {
   // Select all the existing download buttons
   const downloadButtons = document.querySelectorAll(
-    '.mantine-UnstyledButton-root[href^="/api/download/models/"]'
-  );
-  const createButton = document.querySelectorAll(
-    '.mantine-UnstyledButton-root[data-activity="create:model"]'
+    ".mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an"
   );
 
   // Loop through each download button
   downloadButtons.forEach((downloadButton) => {
     // Get the parent container of the download button
     const buttonContainer = downloadButton.parentNode;
-    const downloadParams = downloadButton.href.split('?')[1];
+    const downloadParams = downloadButton.href.split("?")[1];
 
     // Check if the "Download with Stability Matrix" button already exists
     const existingButton = buttonContainer.parentNode.querySelector(
@@ -48,7 +45,9 @@ function addButton() {
 
       // Create the link based on the IDs
       const link = `stabilitymatrix://downloadCivitModel?modelid=${modelId}${
-        modelVersionId ? `&modelVersionId=${modelVersionId}&${downloadParams}` : `&${downloadParams}`
+        modelVersionId
+          ? `&modelVersionId=${modelVersionId}&${downloadParams}`
+          : `&${downloadParams}`
       }`;
 
       newButton.href = link;
@@ -73,19 +72,47 @@ function addButton() {
   });
 }
 
-addButton();
+function waitForElement(selector, callback) {
+  const observer = new MutationObserver((mutations, me) => {
+    const element = document.querySelector(selector);
+    if (element && element.href) {
+      callback(element);
+      me.disconnect(); // stop observing
+    }
+  });
 
-let previousUrl = '';
-const observer = new MutationObserver(mutations => {
+  observer.observe(document, {
+    childList: true,
+    subtree: true,
+  });
+}
+
+waitForElement(
+  '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an',
+  (element) => {
+    addButton();
+  }
+);
+
+let previousUrl = "";
+const observer = new MutationObserver((mutations) => {
   if (location.href !== previousUrl) {
     previousUrl = location.href;
     const url = new URL(location.href);
 
-    if (!url.href.includes("stabilitymatrix://") && !url.href.includes("/images/")) {
-      setTimeout(addButton, 500);
+    if (
+      !url.href.includes("stabilitymatrix://") &&
+      !url.href.includes("/images/")
+    ) {
+      waitForElement(
+        '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an',
+        (element) => {
+          addButton();
+        }
+      );
     }
   }
 });
 
-const config = {attributes: true, childList: true, subtree: true};
+const config = { attributes: true, childList: true, subtree: true };
 observer.observe(document, config);
