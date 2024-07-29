@@ -5,12 +5,8 @@ function addButton() {
     '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an'
   );
 
-  console.log("buttons:", downloadButtons);
-
   // Loop through each download button
   downloadButtons.forEach((downloadButton) => {
-    console.log("new button");
-
     // Get the parent container of the download button
     const buttonContainer = downloadButton.parentNode;
     const downloadParams = downloadButton.href.split("?")[1];
@@ -25,10 +21,8 @@ function addButton() {
       return;
     }
 
-    console.log(downloadButton.href);
     // Check if the create button exists
     if (downloadParams) {
-      console.log("download params", downloadParams);
       // Create a new button element
       const newButton = document.createElement("a");
 
@@ -78,13 +72,6 @@ function addButton() {
   });
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-console.log("script loaded");
-// await addButton();
-
 function waitForElement(selector, callback) {
   const observer = new MutationObserver((mutations, me) => {
     const element = document.querySelector(selector);
@@ -103,7 +90,6 @@ function waitForElement(selector, callback) {
 waitForElement(
   '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an',
   (element) => {
-    console.log("Element appeared:", element);
     addButton();
   }
 );
@@ -125,7 +111,6 @@ navigation.addEventListener("navigate", async (event) => {
     waitForElement(
       '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an',
       (element) => {
-        console.log("Element appeared:", element);
         addButton();
       }
     );
