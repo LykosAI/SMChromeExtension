@@ -1,18 +1,19 @@
 // Content script
 function addButton() {
   // Select all the existing download buttons
-  const downloadButtons = document.querySelectorAll(
-    '.mantine-UnstyledButton-root[href^="/api/download/models/"]'
+  let downloadButtons = document.querySelectorAll(
+    '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an'
   );
-  const createButton = document.querySelectorAll(
-    '.mantine-UnstyledButton-root[data-activity="create:model"]'
-  );
+
+  console.log("buttons:", downloadButtons);
 
   // Loop through each download button
   downloadButtons.forEach((downloadButton) => {
+    console.log("new button");
+
     // Get the parent container of the download button
     const buttonContainer = downloadButton.parentNode;
-    const downloadParams = downloadButton.href.split('?')[1];
+    const downloadParams = downloadButton.href.split("?")[1];
 
     // Check if the "Download with Stability Matrix" button already exists
     const existingButton = buttonContainer.parentNode.querySelector(
@@ -24,8 +25,10 @@ function addButton() {
       return;
     }
 
+    console.log(downloadButton.href);
     // Check if the create button exists
     if (downloadParams) {
+      console.log("download params", downloadParams);
       // Create a new button element
       const newButton = document.createElement("a");
 
@@ -48,7 +51,9 @@ function addButton() {
 
       // Create the link based on the IDs
       const link = `stabilitymatrix://downloadCivitModel?modelid=${modelId}${
-        modelVersionId ? `&modelVersionId=${modelVersionId}&${downloadParams}` : `&${downloadParams}`
+        modelVersionId
+          ? `&modelVersionId=${modelVersionId}&${downloadParams}`
+          : `&${downloadParams}`
       }`;
 
       newButton.href = link;
@@ -72,18 +77,57 @@ function addButton() {
     }
   });
 }
-addButton();
-navigation.addEventListener('navigate', (event) => {
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+console.log("script loaded");
+// await addButton();
+
+function waitForElement(selector, callback) {
+  const observer = new MutationObserver((mutations, me) => {
+    const element = document.querySelector(selector);
+    if (element && element.href) {
+      callback(element);
+      me.disconnect(); // stop observing
+    }
+  });
+
+  observer.observe(document, {
+    childList: true,
+    subtree: true,
+  });
+}
+
+waitForElement(
+  '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an',
+  (element) => {
+    console.log("Element appeared:", element);
+    addButton();
+  }
+);
+
+navigation.addEventListener("navigate", async (event) => {
   if (!event.canIntercept) {
     return;
   }
-  
+
   const url = new URL(event.destination.url);
   if (event.downloadRequest !== null) {
     return;
   }
 
-  if (!url.href.includes("stabilitymatrix://") && !url.href.includes("/images/")) {
-    setTimeout(addButton, 500);
+  if (
+    !url.href.includes("stabilitymatrix://") &&
+    !url.href.includes("/images/")
+  ) {
+    waitForElement(
+      '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an',
+      (element) => {
+        console.log("Element appeared:", element);
+        addButton();
+      }
+    );
   }
 });
