@@ -37,8 +37,10 @@ function addButton() {
       // Get the IDs from the URL
       const url = new URL(window.location.href);
       let modelId = url.pathname.split("/").pop();
+
       // Check if the modelId is an integer, and if not, pop again
-      if (isNaN(parseInt(modelId))) {
+      let isNum = /^\d+$/.test(modelId);
+      if (!isNum) {
         modelId = url.pathname.split("/")[2];
       }
       const modelVersionId = url.searchParams.get("modelVersionId");
