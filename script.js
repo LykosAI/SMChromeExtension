@@ -5,8 +5,6 @@ function addButton() {
     document.querySelectorAll('a[href*="/api/download/models/"]')
   ).filter((btn) => btn.getAttribute("data-tour") !== "model:download");
 
-  console.log(downloadButtons);
-
   // Loop through each download button
   downloadButtons.forEach((downloadButton) => {
     // Get the parent container of the download button
