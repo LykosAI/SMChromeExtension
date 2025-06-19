@@ -1,9 +1,9 @@
 // Content script
 function addButton() {
   // Select all the existing download buttons
-  const downloadButtons = document.querySelectorAll(
-    ".mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an"
-  );
+  const downloadButtons = Array.from(
+    document.querySelectorAll('a[href*="/api/download/models/"]')
+  ).filter((btn) => btn.getAttribute("data-tour") !== "model:download");
 
   // Loop through each download button
   downloadButtons.forEach((downloadButton) => {
@@ -33,6 +33,11 @@ function addButton() {
       newButton.style.borderRadius = "4px";
       newButton.style.color = "#fff";
       newButton.style.cursor = "pointer";
+      newButton.style.padding = "4px 12px";
+      newButton.style.margin = "4px 0";
+      newButton.style.fontSize = "0.875rem";
+      newButton.style.textAlign = "center";
+      newButton.style.display = "block";
 
       // Get the IDs from the URL
       const url = new URL(window.location.href);
@@ -90,7 +95,7 @@ function waitForElement(selector, callback) {
 }
 
 waitForElement(
-  '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an',
+  'a[href*="/api/download/models/"]',
   (element) => {
     addButton();
   }
@@ -107,7 +112,7 @@ const observer = new MutationObserver((mutations) => {
       !url.href.includes("/images/")
     ) {
       waitForElement(
-        '.mantine-UnstyledButton-root.mantine-Button-root.mantine-4fe1an',
+        'a[href*="/api/download/models/"]',
         (element) => {
           addButton();
         }
