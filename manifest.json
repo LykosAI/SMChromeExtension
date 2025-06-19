@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Stability Matrix CivitAI Integration",
   "description": "This extension adds a button to the CivitAI interface that allows you download a given model with Stability Matrix.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "action": {
     "default_icon": "icon.png"
   },
